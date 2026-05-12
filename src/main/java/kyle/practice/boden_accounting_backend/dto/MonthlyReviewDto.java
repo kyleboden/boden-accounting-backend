@@ -21,8 +21,9 @@ public class MonthlyReviewDto {
     private double totalBank;
     private double totalBrokerage;
     private double tithingPaid;
-    private double investedTithed;
-    private double investedNontithed;
+    private double investedNonTithed;
+    private Long depositId;
+    private Long withdrawalId;
     private LocalDate date;
     private String notes;
 }

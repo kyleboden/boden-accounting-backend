@@ -16,8 +16,9 @@ public class MonthlyReviewMapper {
                 monthlyReview.getTotalBank(),
                 monthlyReview.getTotalBrokerage(),
                 monthlyReview.getTithingPaid(),
-                monthlyReview.getInvestedTithed(),
-                monthlyReview.getInvestedNontithed(),
+                monthlyReview.getInvestedNonTithed(),
+                monthlyReview.getDepositId(),
+                monthlyReview.getWithdrawalId(),
                 monthlyReview.getDate(),
                 monthlyReview.getNotes()
         );
@@ -34,8 +35,9 @@ public class MonthlyReviewMapper {
                 monthlyReviewDto.getTotalBank(),
                 monthlyReviewDto.getTotalBrokerage(),
                 monthlyReviewDto.getTithingPaid(),
-                monthlyReviewDto.getInvestedTithed(),
-                monthlyReviewDto.getInvestedNontithed(),
+                monthlyReviewDto.getInvestedNonTithed(),
+                monthlyReviewDto.getDepositId(),
+                monthlyReviewDto.getWithdrawalId(),
                 monthlyReviewDto.getDate(),
                 monthlyReviewDto.getNotes()
         );

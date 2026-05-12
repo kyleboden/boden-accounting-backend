@@ -43,11 +43,14 @@ public class MonthlyReview {
     @Column(name = "tithing_paid")
     private double tithingPaid;
 
-    @Column(name = "invested_tithed")
-    private double investedTithed;
+    @Column(name = "invested_non_tithed")
+    private double investedNonTithed;
 
-    @Column(name = "invested_nontithed")
-    private double investedNontithed;
+    @Column(name = "brokerage_deposit_id")
+    private Long depositId;
+
+    @Column(name = "brokerage_withdrawal_id")
+    private Long withdrawalId;
 
     @Column(name = "date")
     private LocalDate date;
