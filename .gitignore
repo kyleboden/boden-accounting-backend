@@ -20,6 +20,7 @@
 # macOS
 .DS_Store
 
+
 # Maven wrapper
 /.mvn/wrapper/maven-wrapper.jar
 
