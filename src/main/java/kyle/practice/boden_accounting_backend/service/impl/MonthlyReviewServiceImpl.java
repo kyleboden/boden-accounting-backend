@@ -139,7 +139,17 @@ public class MonthlyReviewServiceImpl implements MonthlyReviewService {
 
     @Override
     public void deleteMonthlyEntry(Long entryId) {
-        monthlyReviewRepository.findById(entryId).orElseThrow(() -> new ResourceNotFoundException("Monthly review not found with id: " + entryId));
+        var monthlyReview = monthlyReviewRepository.findById(entryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Monthly review not found with id: " + entryId));
+
+        if (monthlyReview.getDepositId() != null) {
+            brokerageTransactionService.deleteBrokerageTransaction(monthlyReview.getDepositId());
+        }
+
+        if (monthlyReview.getWithdrawalId() != null) {
+            brokerageTransactionService.deleteBrokerageTransaction(monthlyReview.getWithdrawalId());
+        }
+
         monthlyReviewRepository.deleteById(entryId);
     }
 }
