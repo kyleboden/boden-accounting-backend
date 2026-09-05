@@ -39,7 +39,8 @@ public class MonthlyReviewMapper {
                 monthlyReviewDto.getDepositId(),
                 monthlyReviewDto.getWithdrawalId(),
                 monthlyReviewDto.getDate(),
-                monthlyReviewDto.getNotes()
+                monthlyReviewDto.getNotes(),
+                null
         );
     }
 }

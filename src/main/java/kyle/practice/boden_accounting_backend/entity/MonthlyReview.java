@@ -57,6 +57,9 @@ public class MonthlyReview {
 
     @Column(name = "notes")
     private String notes;
+
+    @Column(name = "owner_user_id")
+    private String ownerUserId;
 }
 
 
@@ -72,4 +75,3 @@ public class MonthlyReview {
 // - Non-tithed invested (both this and tithed each create a new row in brokerage transactions)
 // - Date
 // - Notes
-
