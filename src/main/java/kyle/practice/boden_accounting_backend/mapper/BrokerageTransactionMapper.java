@@ -23,7 +23,8 @@ public class BrokerageTransactionMapper {
                 transactionDto.getType(),
                 transactionDto.getAmount(),
                 transactionDto.isTithed(),
-                transactionDto.getNotes()
+                transactionDto.getNotes(),
+                null
         );
     }
 }

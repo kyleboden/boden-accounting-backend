@@ -11,6 +11,7 @@ import kyle.practice.boden_accounting_backend.entity.MonthlyReview;
 import kyle.practice.boden_accounting_backend.exception.ResourceNotFoundException;
 import kyle.practice.boden_accounting_backend.mapper.MonthlyReviewMapper;
 import kyle.practice.boden_accounting_backend.repository.MonthlyReviewRepository;
+import kyle.practice.boden_accounting_backend.security.CurrentUserService;
 import kyle.practice.boden_accounting_backend.service.MonthlyReviewService;
 
 import java.util.List;
@@ -21,11 +22,16 @@ public class MonthlyReviewServiceImpl implements MonthlyReviewService {
 
     private MonthlyReviewRepository monthlyReviewRepository;
     private kyle.practice.boden_accounting_backend.service.BrokerageTransactionService brokerageTransactionService;
+    private CurrentUserService currentUserService;
 
     @Override
     public MonthlyReviewDto createMonthlyEntry(MonthlyReviewDto monthlyReviewDto) {
+        String ownerUserId = currentUserService.getCurrentUserId();
         // Create monthly review entry
         var monthlyReview = MonthlyReviewMapper.mapToMonthlyReview(monthlyReviewDto);
+        monthlyReview.setOwnerUserId(ownerUserId);
+        monthlyReview.setDepositId(null);
+        monthlyReview.setWithdrawalId(null);
         var savedMonthlyReview = monthlyReviewRepository.save(monthlyReview);
 
         // create brokerage transactions for invested amounts (always non-tithed) and withdrawals
@@ -63,19 +69,22 @@ public class MonthlyReviewServiceImpl implements MonthlyReviewService {
 
     @Override
     public MonthlyReviewDto getMonthlyEntryById(Long entryId) {
-        var monthlyReview = monthlyReviewRepository.findById(entryId).orElseThrow(() -> new ResourceNotFoundException("Monthly review not found with id: " + entryId));
+        String ownerUserId = currentUserService.getCurrentUserId();
+        var monthlyReview = monthlyReviewRepository.findByIdAndOwnerUserId(entryId, ownerUserId).orElseThrow(() -> new ResourceNotFoundException("Monthly review not found with id: " + entryId));
         return MonthlyReviewMapper.mapToMonthlyReviewDto(monthlyReview);
     }
 
     @Override
     public List<MonthlyReviewDto> getAllMonthlyEntries() {
-        List<MonthlyReview> monthlyReviews = monthlyReviewRepository.findAll();
+        String ownerUserId = currentUserService.getCurrentUserId();
+        List<MonthlyReview> monthlyReviews = monthlyReviewRepository.findAllByOwnerUserId(ownerUserId);
         return monthlyReviews.stream().map(MonthlyReviewMapper::mapToMonthlyReviewDto).toList();
     }
 
     @Override
     public MonthlyReviewDto updateMonthlyEntry(Long entryId, MonthlyReviewDto updatedMonthlyReview) {
-        var monthlyReview = monthlyReviewRepository.findById(entryId).orElseThrow(() -> new ResourceNotFoundException("Monthly review not found with id: " + entryId));
+        String ownerUserId = currentUserService.getCurrentUserId();
+        var monthlyReview = monthlyReviewRepository.findByIdAndOwnerUserId(entryId, ownerUserId).orElseThrow(() -> new ResourceNotFoundException("Monthly review not found with id: " + entryId));
         monthlyReview.setKyleIncome(updatedMonthlyReview.getKyleIncome());
         monthlyReview.setSarahIncome(updatedMonthlyReview.getSarahIncome());
         monthlyReview.setGiftCardIncome(updatedMonthlyReview.getGiftCardIncome());
@@ -139,7 +148,8 @@ public class MonthlyReviewServiceImpl implements MonthlyReviewService {
 
     @Override
     public void deleteMonthlyEntry(Long entryId) {
-        var monthlyReview = monthlyReviewRepository.findById(entryId)
+        String ownerUserId = currentUserService.getCurrentUserId();
+        var monthlyReview = monthlyReviewRepository.findByIdAndOwnerUserId(entryId, ownerUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Monthly review not found with id: " + entryId));
 
         if (monthlyReview.getDepositId() != null) {
@@ -150,6 +160,6 @@ public class MonthlyReviewServiceImpl implements MonthlyReviewService {
             brokerageTransactionService.deleteBrokerageTransaction(monthlyReview.getWithdrawalId());
         }
 
-        monthlyReviewRepository.deleteById(entryId);
+        monthlyReviewRepository.delete(monthlyReview);
     }
 }

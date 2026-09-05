@@ -35,4 +35,7 @@ public class BrokerageTransaction {
 
     @Column(name = "notes")
     private String notes;
+
+    @Column(name = "owner_user_id")
+    private String ownerUserId;
 }
